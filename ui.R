@@ -20,10 +20,12 @@ dashboardPage(skin = "black",
                                       width       = 4,
                                       solidHeader = TRUE,
                                       status      = "success", 
-                                      height      = 150, 
+                                      height      = 200, 
                                       fileInput(inputId = 'inputFile', 
                                                 label   = 'Choose CSV File'
-                                               )
+                                               ),
+                                      actionButton(inputId = "upload", 
+                                                   label   = "upload data")
                                       )
                 ),
               uiOutput("ui_setup")

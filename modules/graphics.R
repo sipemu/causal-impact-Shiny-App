@@ -7,11 +7,10 @@ output$tsPlot <- renderDygraph({
   end   <- input$dateRange[2]
   
   # we need to convert the dataframe into a timeseries for dygraph
-  orderme <- seq(as.Date(start), as.Date(end), by=1)
-  ci <- xts(tsData$y, orderme)
+  # orderme <- seq(as.Date(start), as.Date(end), by=1)
+  ci <- xts(tsData$y, tsData$date)
   
-  
-  dateWindow <- c(as.Date(input$eventDate) - 70, as.Date(end))
+  dateWindow <- c(max(as.Date(input$eventDate) - 70, start), as.Date(end))
   # the dygraph output
   dygraph(data = ci) %>%
     dyRangeSelector(dateWindow = dateWindow) %>%
@@ -35,7 +34,7 @@ output$gaPlot <- renderDygraph({
   # the dygraph output
   dygraph(data=ci[ , c('response', 'point.pred', 'point.pred.lower', 'point.pred.upper')], 
           main="Expected (95% confidence level) vs Observed", group="ci") %>%
-    dyRangeSelector(dateWindow = c(input$eventDate - 70, end)) %>%
+    dyRangeSelector(dateWindow = c(max(as.Date(input$eventDate) - 70, start), end)) %>%
     dyEvent(date = input$eventDate, "Event") %>%
     dySeries(c('point.pred.lower', 'point.pred','point.pred.upper'), label='Expected') %>%
     dySeries('response', label="Observed")
