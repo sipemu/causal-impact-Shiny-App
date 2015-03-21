@@ -1,3 +1,11 @@
+getCache <- function() {
+  articles <- read.csv("cache/articles.csv", colClasses = "character")
+  sites <- read.csv("cache/sites.csv")
+  startDate <- read.csv("cache/startDate.csv")
+  
+  return(list(articles=articles, sites=sites, startDate=startDate))
+}
+
 # load cahced data
 global.tsCache <- getCache()
 
