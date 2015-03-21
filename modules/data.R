@@ -141,8 +141,8 @@ getData <- reactive({
         filter(date >= start ) -> tsData
     }
   } else {
-    start <- global.startDate
-    end <- global.endDate
+    start <- startDateCache
+    end <- endDateCache
     site <- global.tsCache$sites$site[1]
     article <- global.tsCache$articles$x[1]
     tsData <- getRedshiftData(start, end, site, article)
