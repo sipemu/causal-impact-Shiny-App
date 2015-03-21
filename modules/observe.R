@@ -9,7 +9,7 @@ observe({
 
 # 
 observe({
-  tsData <- getCSV()
+  tsData <- getData()
   
   if (is.null(tsData))
     return()
@@ -29,4 +29,6 @@ observe({
                   inputId = "eventDate",
                   label   = "Event Date",
                   value   = target)
+  
+  # session$sendCustomMessage(type = 'testmessage', message ="La suma de los valores de cada nivel debe  ser igual al N hipotetico")
 })

@@ -1,7 +1,15 @@
+# load cahced data
+global.tsCache <- getCache()
+
 function(input, output, session) {
-  # preloaded data
-  tsDataGlobal <- read.csv("testData.csv", header=TRUE, sep=";", as.is = TRUE)
-  tsDataGlobal$date <- as.Date(tsDataGlobal$date)
+  # cache variables:
+  # if user just made date window smaller, data will not fetched again
+  measVarCache <- "SUM"
+  startDateCache <- as.Date(global.tsCache$startDate$min)
+  endDateCache <- Sys.Date()
+  siteCache <- global.tsCache$sites$site[1]
+  articleCache <- global.tsCache$articles$x[1]
+  tsDataCache <- c()
   
   # trigger for new data
   isNewData <- reactiveValues()

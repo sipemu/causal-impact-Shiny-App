@@ -1,14 +1,16 @@
 # raw data plot ----
 output$tsPlot <- renderDygraph({
   tsData <- getData()
-
+  if(ncol(tsData) == 0)
+    return()
+  
   # get the start and end from the user input in ui.r
   start <- input$dateRange[1]
   end   <- input$dateRange[2]
   
   # we need to convert the dataframe into a timeseries for dygraph
   # orderme <- seq(as.Date(start), as.Date(end), by=1)
-  ci <- xts(tsData$y, tsData$date)
+  ci <- xts(tsData$sales, tsData$date)
   
   dateWindow <- c(max(as.Date(input$eventDate) - 70, start), as.Date(end))
   # the dygraph output

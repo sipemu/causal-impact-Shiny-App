@@ -10,7 +10,11 @@ library(dygraphs)
 # google
 library(CausalImpact)
 
-# Else
+# else
 library(dplyr)
 library(reshape)
 library(R.utils)
+library(stringr)
+
+# db
+library(redshift)

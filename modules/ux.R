@@ -1,12 +1,12 @@
 output$ui_setup <- renderUI({
-  isolate({
-    tsData <- getData()
-    if (is.null(tsData)) 
-      return()
+    #if (is.null(tsData)) 
+    #  return()
     # Output depending on data structure
-    start <- tsData$date[1]
-    end <- tsData$date[nrow(tsData)]
-    target <- tsData$date[floor(length(start:end) / 2)]
+    start <-startDateCache
+    end <- endDateCache
+    target <- start + (end - start) / 2
+    article <- global.tsCache$articles$x
+    names(article) <- as.numeric(global.tsCache$articles$x)
     tagList(
       fluidRow(
         shinydashboard::box(title       = "Select Dates", 
@@ -20,19 +20,32 @@ output$ui_setup <- renderUI({
                                            end     = end),
                             helpText("Choose date range of data. Include lead time before and after event date for sensible results.")
                             ),
-        shinydashboard::box(title       = "Menu 1", 
+        shinydashboard::box(title       = "Select Store & Article", 
                             width       = 4,
                             solidHeader = FALSE,
                             status      = "info", 
                             height      = 200, 
-                            "other possible menu."
+                            selectizeInput(inputId  = "storeID",
+                                           label    = "Store", 
+                                           choices  = global.tsCache$sites$site, 
+                                           selected = global.tsCache$sites$site[1], 
+                                           multiple = F),
+                            selectizeInput(inputId  = "articleID",
+                                           label    = "Article", 
+                                           choices  = article, 
+                                           selected = article[1], 
+                                           multiple = F)
                             ),
-        shinydashboard::box(title       = "Menu 2", 
+        shinydashboard::box(title       = "Measurement", 
                             width       = 4,
                             solidHeader = FALSE,
                             status      = "info", 
                             height      = 200, 
-                            "other possible menu."
+                            radioButtons(inputId  = "measVariable",
+                                         label    = NA, 
+                                         choices  = c("Sales" = "SUM", "Volume" = "COUNT"),
+                                         selected = "SUM"),
+                            helpText("Choose measurement: Sales: sum of sales; Volume: count of sales")
                             )
       ),
       fluidRow(
@@ -59,13 +72,12 @@ output$ui_setup <- renderUI({
                           height      = 250, 
                           radioButtons(inputId = "season",
                                        label    = "Seasonality",
-                                       choices  = c("None" = 0, "Weekly" = 7, "monthly" = 31),
-                                       selected = 0),
+                                       choices  = c("None" = 1, "Weekly" = 7, "Monthly" = 31),
+                                       selected = 1),
                           helpText("This value/date is what will be tested to see if it had a statistically significant impact.")
                           )
       )
     )
-  })
 })
 
 
