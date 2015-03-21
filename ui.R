@@ -14,9 +14,6 @@ dashboardPage(skin = "black",
   ),
   # body
   dashboardBody(
-    singleton(
-      tags$head(tags$script(src = "message-handler.js"))
-    ),
     tabItems(
       tabItem("tab_setup", 
 #                 fluidRow(
