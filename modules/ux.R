@@ -51,7 +51,7 @@ output$ui_setup <- renderUI({
       fluidRow(
         shinydashboard::box(title       = "Click-Drag to Zoom. Double-Click to Reset. Shift-Drag to Pan.", 
                             width       = 12,
-                            dygraphOutput("tsPlot")
+                            NULL # dygraphOutput("tsPlot")
                             )
       ),
       fluidRow(
