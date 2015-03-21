@@ -2,7 +2,6 @@
 # Shiny
 library(shiny)
 library(shinydashboard)
-library(shinyBS)
 
 # Graphics
 library(dygraphs)
