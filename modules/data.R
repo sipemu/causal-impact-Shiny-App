@@ -121,10 +121,10 @@ getData <- reactive({
     measVar <- "SUM"
   # get data
   if (!is.null(input$dateRange)) {
-    start <<- input$dateRange[1]
-    end   <<- input$dateRange[2]
-    site <<- input$storeID
-    article <<- input$articleID
+    start <- input$dateRange[1]
+    end <- input$dateRange[2]
+    site <- input$storeID
+    article <- input$articleID
     # get cached data or not 
     fnD <- checkFetchNewData(start, end, site, article, input$measVariable)
     if (fnD) {
@@ -147,6 +147,11 @@ getData <- reactive({
     article <- global.tsCache$articles$x[1]
     tsData <- getRedshiftData(start, end, site, article)
     shiny::validate(need(nrow(tsData) > 10, "Too less measurements for calculation."))
+    articleCache <<- article
+    siteCache <<- site
+    startDateCache <<- start
+    endDateCache <<- end
+    measVarCache <<- measVar
     fnD <- TRUE
   }
   # chace data globally if new
