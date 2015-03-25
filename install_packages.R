@@ -17,7 +17,7 @@ devtools::install_github(c("ramnathv/htmlwidgets",
 
 pkg <- c("shiny", "dygraphs", "dplyr", "reshape", "stringr")
 available <- suppressWarnings(
-  suppressPackageStartupMessages(sapply(pkgs, 
+  suppressPackageStartupMessages(sapply(pkg, 
                                         require, 
                                         character.only=TRUE)))
 

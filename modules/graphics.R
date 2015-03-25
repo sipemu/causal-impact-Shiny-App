@@ -1,5 +1,13 @@
 # raw data plot ----
 output$tsPlot <- renderDygraph({
+  
+  if (is.null(input$getDataButton))
+    return()
+  
+  if (input$getDataButton == 0)
+    return()
+  
+  
   tsData <- getData()
   if(ncol(tsData) == 0)
     return()

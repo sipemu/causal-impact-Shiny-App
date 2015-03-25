@@ -116,6 +116,12 @@ getQuery <- function(article, site, start, end, aggFunc="SUM") {
 # data fetch----
 getData <- reactive({
   
+  if (is.null(input$getDataButton))
+    return()
+  
+  if (input$getDataButton == 0)
+    return()
+  
   measVar <- input$measVariable
   if (is.null(measVar))
     measVar <- "SUM"
@@ -126,7 +132,11 @@ getData <- reactive({
     site <- input$storeID
     article <- input$articleID
     # get cached data or not 
-    fnD <- checkFetchNewData(start, end, site, article, input$measVariable)
+    if (is.null(tsDataCache)) {
+      fnD <- TRUE
+    } else {
+      fnD <- checkFetchNewData(start, end, site, article, input$measVariable)
+    }
     if (fnD) {
       tsData <- getRedshiftData(start, end, site, article, input$measVariable)
       print(nrow(tsData))
