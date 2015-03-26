@@ -10,7 +10,11 @@ dashboardPage(skin = "black",
       menuItem(text    = "Results", 
                icon    = icon("dashboard"), 
                tabName = "tab_results")
-    )
+    ), 
+    hr(),
+    column(offset = 1, width=11,
+      actionButton("stopApp", "Quit Application")
+      )
   ),
   # body
   dashboardBody(

@@ -17,8 +17,11 @@ output$ui_setup <- renderUI({
     start <-startDateCache
     end <- endDateCache
     target <- start + (end - start) / 2
-    article <- global.tsCache$articles$x
-    names(article) <- as.numeric(global.tsCache$articles$x)
+    article <- c("all", global.tsCache$articles$x)
+    site <- c("all", global.tsCache$sites$site)
+    names(article) <- c("All Articles", paste0(as.numeric(global.tsCache$articles$x), "-article_name"))
+    names(site) <- c("All Sites", paste0(global.tsCache$sites$site, "-site_name"))
+    
     tagList(
       fluidRow(
         shinydashboard::box(title       = "Select Dates", 
@@ -31,7 +34,8 @@ output$ui_setup <- renderUI({
                                            start   = start,
                                            end     = end),
                             helpText("Choose date range of data. Include lead time before and after event date for sensible results."),
-                            actionButton("getDataButton", "Get Data")
+                            actionButton("getDataButton", "Get Data"),
+                            downloadButton("downloadData", "Export Data")
         ),
         shinydashboard::box(title       = "Select Store & Article", 
                             width       = 4,
@@ -40,13 +44,13 @@ output$ui_setup <- renderUI({
                             height      = 220, 
                             selectizeInput(inputId  = "storeID",
                                            label    = "Store", 
-                                           choices  = global.tsCache$sites$site, 
-                                           selected = global.tsCache$sites$site[1], 
+                                           choices  = site, 
+                                           selected = site[2], 
                                            multiple = T),
                             selectizeInput(inputId  = "articleID",
                                            label    = "Article", 
                                            choices  = article, 
-                                           selected = article[1], 
+                                           selected = article[2], 
                                            multiple = T)
         ),
         shinydashboard::box(title       = "Measurement", 

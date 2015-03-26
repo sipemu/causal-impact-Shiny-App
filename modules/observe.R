@@ -25,6 +25,17 @@ observe({
 })
 
 observe({
+  if (is.null(input$stopApp))
+    return()
+  
+  if (input$stopApp == 0)
+    return()
+  
+  stopApp()
+})
+
+
+observe({
   if (is.null(input$doLogin))
     return()
   
@@ -42,10 +53,10 @@ observe({
   start <-startDateCache
   end <- endDateCache
   target <- start + (end - start) / 2
-  article <- global.tsCache$articles$x
   article <- c("all", global.tsCache$articles$x)
-  names(article) <- c("all", as.numeric(global.tsCache$articles$x))
-  sites <- c("all", global.tsCache$sites$site)
+  site <- c("all", global.tsCache$sites$site)
+  names(article) <- c("All Articles", paste0(as.numeric(global.tsCache$articles$x), "-article_name"))
+  names(site) <- c("All Sites", paste0(global.tsCache$sites$site, "-site_name"))
   
   updateDateRangeInput(session,
                        inputId = "dateRange",
@@ -61,11 +72,23 @@ observe({
   updateSelectizeInput(session,
                        inputId  = "storeID",
                        label    = "Store", 
-                       choices  = sites, 
-                       selected = sites[2])
+                       choices  = site, 
+                       selected = site[2])
   updateSelectizeInput(session,
                  inputId  = "articleID",
                  label    = "Article", 
                  choices  = article, 
                  selected = article[2])
 })
+
+output$downloadData <- downloadHandler(
+  filename = function() { 
+    paste('Export-Data-', Sys.Date(), '.xlsx', sep='')
+  },
+  content = function(file) {
+    fname <- paste(file, "xlsx", sep=".")
+    writeWorksheetToFile(file  = fname, 
+                         data  = getData(),
+                         sheet = "Data")
+    file.rename(fname, file)
+  })

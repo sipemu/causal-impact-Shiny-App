@@ -14,6 +14,7 @@ library(dplyr)
 library(reshape)
 library(R.utils)
 library(stringr)
+library(XLConnect)
 
 # db
 library(redshift)

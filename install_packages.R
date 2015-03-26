@@ -15,7 +15,7 @@ devtools::install_github(c("ramnathv/htmlwidgets",
                            "google/CausalImpact",
                            "pingles/redshift-r"))
 
-pkg <- c("shiny", "dygraphs", "dplyr", "reshape", "stringr")
+pkg <- c("shiny", "dygraphs", "dplyr", "reshape", "stringr", "XLConnect")
 available <- suppressWarnings(
   suppressPackageStartupMessages(sapply(pkg, 
                                         require, 
