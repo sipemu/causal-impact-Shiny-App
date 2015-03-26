@@ -1,6 +1,5 @@
 # raw data plot ----
 output$tsPlot <- renderDygraph({
-  
   tsData <- getData()
   if(is.null(tsData))
     return()
