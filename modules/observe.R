@@ -25,6 +25,20 @@ observe({
 })
 
 observe({
+  if (is.null(input$doLogin))
+    return()
+  
+  if (input$doLogin == 0)
+    return()
+  
+  user <- input$user
+  passwd <- input$passwd
+  if (user == "shiny" & passwd == "shiny2015") {
+    reaVal$loggedIn <<- TRUE
+  }
+})
+
+observe({
   start <-startDateCache
   end <- endDateCache
   target <- start + (end - start) / 2

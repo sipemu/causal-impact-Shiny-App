@@ -10,6 +10,8 @@ getCache <- function() {
 global.tsCache <- getCache()
 
 function(input, output, session) {
+  reaVal <- reactiveValues()
+  reaVal$loggedIn <- FALSE
   # cache variables:
   # if user just made date window smaller, data will not fetched again
   measVarCache <- "SUM"
