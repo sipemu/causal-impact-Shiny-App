@@ -29,8 +29,9 @@ observe({
   end <- endDateCache
   target <- start + (end - start) / 2
   article <- global.tsCache$articles$x
-  names(article) <- as.numeric(global.tsCache$articles$x)
-  
+  article <- c("all", global.tsCache$articles$x)
+  names(article) <- c("all", as.numeric(global.tsCache$articles$x))
+  sites <- c("all", global.tsCache$sites$site)
   
   updateDateRangeInput(session,
                        inputId = "dateRange",
@@ -46,11 +47,11 @@ observe({
   updateSelectizeInput(session,
                        inputId  = "storeID",
                        label    = "Store", 
-                       choices  = global.tsCache$sites$site, 
-                       selected = global.tsCache$sites$site[1])
+                       choices  = sites, 
+                       selected = sites[2])
   updateSelectizeInput(session,
                  inputId  = "articleID",
                  label    = "Article", 
                  choices  = article, 
-                 selected = article[1])
+                 selected = article[2])
 })

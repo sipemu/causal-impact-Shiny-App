@@ -90,26 +90,62 @@ getRedshiftData <- function(start, end, site, article, aggFunc="SUM") {
 # aggFunc:  SUM for value
 #           COUNT for Volume
 getQuery <- function(article, site, start, end, aggFunc="SUM") {
-  query <- paste0("SELECT ", 
-                  aggFunc, "(salesatretail) as sales
+  site_q <- paste(paste0("'", site, "'"), collapse=", ")
+  article_q <- paste(paste0("'", article, "'"), collapse=", ")
+  if ("all" %in% site & "all" %in% article) {
+    query <- paste0("SELECT ", 
+                    aggFunc, "(salesatretail) as sales
+                  , businessdate as date 
+                  FROM 
+                    transactions2
+                  GROUP BY
+                    date
+                  ORDER BY date;")
+  } else if ("all" %in% site & !("all" %in% article)) {
+    query <- paste0("SELECT ", 
+                    aggFunc, "(salesatretail) as sales
                   , businessdate as date 
                   FROM 
                     transactions2
                   WHERE 
-                    article = '", article, "'
-                  AND 
-                    site = ", site, "
+                    article IN (", article_q, ")
                   GROUP BY
                     date
                   ORDER BY date;")
+  } else if (!("all" %in% site) & "all" %in% article) {
+    query <- paste0("SELECT ", 
+                    aggFunc, "(salesatretail) as sales
+                  , businessdate as date 
+                  FROM 
+                    transactions2
+                  WHERE 
+                    site IN (", site_q, ")
+                  GROUP BY
+                    date
+                  ORDER BY date;")
+  } else {
+    query <- paste0("SELECT ", 
+                    aggFunc, "(salesatretail) as sales
+                  , businessdate as date 
+                  FROM 
+                    transactions2
+                  WHERE 
+                    article IN (", article_q, ")
+                  AND 
+                    site IN (", site_q, ")
+                  GROUP BY
+                    date
+                  ORDER BY date;")
+  }
+
   cRow <- paste0("SELECT 
                     COUNT(article)
                   FROM 
                     transactions2
                   WHERE 
-                    article = '", article, "'
+                    article IN (", article, ")
                   AND 
-                    site = ", site, ";")
+                    site IN (", site, ");")
   return(list(query=query, count=cRow))
 }
 
@@ -122,53 +158,60 @@ getData <- reactive({
   if (input$getDataButton == 0)
     return()
   
-  measVar <- input$measVariable
-  if (is.null(measVar))
-    measVar <- "SUM"
-  # get data
-  if (!is.null(input$dateRange)) {
-    start <- input$dateRange[1]
-    end <- input$dateRange[2]
-    site <- input$storeID
-    article <- input$articleID
-    # get cached data or not 
-    if (is.null(tsDataCache)) {
-      fnD <- TRUE
+  isolate({
+    measVar <- input$measVariable
+    if (is.null(measVar))
+      measVar <- "SUM"
+    # get data
+    if (!is.null(input$dateRange)) {
+      start <- input$dateRange[1]
+      end <- input$dateRange[2]
+      site <- input$storeID
+      article <- input$articleID
+      
+      if (is.null(site) | is.null(article))
+        return()
+      
+      # get cached data or not 
+      if (is.null(tsDataCache)) {
+        fnD <- TRUE
+      } else {
+        fnD <- checkFetchNewData(start, end, site, article, input$measVariable)
+        print(fnD)
+      }
+      if (fnD) {
+        tsData <- getRedshiftData(start, end, site, article, input$measVariable)
+        print(nrow(tsData))
+        shiny::validate(need(nrow(tsData) > 10, "Too less measurements for calculation."))
+        articleCache <<- article
+        siteCache <<- site
+        startDateCache <<- start
+        endDateCache <<- end
+        measVarCache <<- measVar
+      } else {
+        tsDataCache %>% 
+          filter(date >= start ) -> tsData
+      }
     } else {
-      fnD <- checkFetchNewData(start, end, site, article, input$measVariable)
-    }
-    if (fnD) {
-      tsData <- getRedshiftData(start, end, site, article, input$measVariable)
-      print(nrow(tsData))
+      start <- startDateCache
+      end <- endDateCache
+      site <- global.tsCache$sites$site[1]
+      article <- global.tsCache$articles$x[1]
+      tsData <- getRedshiftData(start, end, site, article)
       shiny::validate(need(nrow(tsData) > 10, "Too less measurements for calculation."))
       articleCache <<- article
       siteCache <<- site
       startDateCache <<- start
       endDateCache <<- end
       measVarCache <<- measVar
-    } else {
-      tsDataCache %>% 
-        filter(date >= start ) -> tsData
+      fnD <- TRUE
     }
-  } else {
-    start <- startDateCache
-    end <- endDateCache
-    site <- global.tsCache$sites$site[1]
-    article <- global.tsCache$articles$x[1]
-    tsData <- getRedshiftData(start, end, site, article)
-    shiny::validate(need(nrow(tsData) > 10, "Too less measurements for calculation."))
-    articleCache <<- article
-    siteCache <<- site
-    startDateCache <<- start
-    endDateCache <<- end
-    measVarCache <<- measVar
-    fnD <- TRUE
-  }
-  # chace data globally if new
-  if (fnD)
-    tsDataCache <<- tsData
-  
-  return(tsData)
+    # chace data globally if new
+    if (fnD)
+      tsDataCache <<- tsData
+    
+    return(tsData)
+  })
 })
 
 # check date window ----
@@ -176,8 +219,10 @@ checkFetchNewData <- function(startDate, endDate, site, article, measVar) {
   n <- nrow(tsDataCache)
   if (startDate >= tsDataCache$date[1] & 
       endDate <= tsDataCache$date[n] & 
-      site == siteCache & 
-      article == articleCache & 
+      sum(siteCache %in% site) == length(site) & 
+      length(siteCache) == length(site) &
+      sum(articleCache %in% article) == length(article) & 
+      length(articleCache) == length(article) &
       measVar == measVarCache) {
     return(FALSE)
   } else {
