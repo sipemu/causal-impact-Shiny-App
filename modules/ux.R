@@ -1,6 +1,6 @@
 output$login_page <- renderUI({
   if (reaVal$loggedIn) {
-    ui_setup()
+    uiOutput("ui_setup")
   } else {
     fluidRow(
       column(2, textInput("user", "Username")),
@@ -10,10 +10,13 @@ output$login_page <- renderUI({
   }
 })
 
-ui_setup <- function() {
-    #if (is.null(tsData)) 
-    #  return()
-    # Output depending on data structure
+output$ui_setup <- renderUI({
+  if(is.null(input$doLogin))
+    return()
+  
+  if(input$doLogin == 0)
+    return()
+  
     start <-startDateCache
     end <- endDateCache
     target <- start + (end - start) / 2
@@ -44,13 +47,13 @@ ui_setup <- function() {
                             height      = 220, 
                             selectizeInput(inputId  = "storeID",
                                            label    = "Store", 
-                                           choices  = site, 
-                                           selected = site[2], 
+                                           choices  = site[1], 
+                                           selected = site[1], 
                                            multiple = T),
                             selectizeInput(inputId  = "articleID",
                                            label    = "Article", 
-                                           choices  = NULL, #article, 
-                                           selected = NULL, # article[2], 
+                                           choices  = article[1], 
+                                           selected = article[1], 
                                            multiple = T)
         ),
         shinydashboard::box(title       = "Measurement", 
@@ -95,7 +98,7 @@ ui_setup <- function() {
         )
       )
     )
-}
+})
 
 
 output$ui_results <- renderUI({

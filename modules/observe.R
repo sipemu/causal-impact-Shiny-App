@@ -42,11 +42,13 @@ observe({
   if (input$doLogin == 0)
     return()
   
-  user <- input$user
-  passwd <- input$passwd
-  if (user == "shiny" & passwd == "shiny2015") {
-    reaVal$loggedIn <<- TRUE
-  }
+  isolate({
+    user <- input$user
+    passwd <- input$passwd
+    if (user == "shiny" & passwd == "shiny2015") {
+      reaVal$loggedIn <<- TRUE
+    }
+  })
 })
 
 observe({
@@ -69,20 +71,22 @@ observe({
                   label   = "Event Date",
                   value   = target)
   
-  isolate({selArt <- input$storeID})
+  selArt <- input$storeID
+  id <- which(site == selArt)
   updateSelectizeInput(session,
                        inputId  = "storeID",
                        label    = "Store", 
                        choices  = site, 
-                       selected = selArt,
+                       selected = site[id],
                        server   = TRUE)
   
-  isolate({selArt <- input$articleID})
+  selArt <- input$articleID
+  id <- which(article == selArt)
   updateSelectizeInput(session,
                  inputId  = "articleID",
                  label    = "Article", 
                  choices  = article, 
-                 selected = selArt,
+                 selected = article[id],
                  server   = TRUE)
 })
 
