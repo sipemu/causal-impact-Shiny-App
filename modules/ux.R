@@ -11,11 +11,7 @@ output$login_page <- renderUI({
 })
 
 output$ui_setup <- renderUI({
-  if(is.null(input$doLogin))
-    return()
-  
-  if(input$doLogin == 0)
-    return()
+  reaVal$loggedIn
   
     start <-startDateCache
     end <- endDateCache
@@ -47,13 +43,13 @@ output$ui_setup <- renderUI({
                             height      = 220, 
                             selectizeInput(inputId  = "storeID",
                                            label    = "Store", 
-                                           choices  = site[1], 
-                                           selected = site[1], 
+                                           choices  = site[1], # server side search
+                                           selected = site[1], # server side search
                                            multiple = T),
                             selectizeInput(inputId  = "articleID",
                                            label    = "Article", 
-                                           choices  = article[1], 
-                                           selected = article[1], 
+                                           choices  = article[1], # server side search
+                                           selected = article[1], # server side search
                                            multiple = T)
         ),
         shinydashboard::box(title       = "Measurement", 
