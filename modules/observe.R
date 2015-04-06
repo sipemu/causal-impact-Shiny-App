@@ -8,7 +8,6 @@ observe({
     start <- tsData$date[1]
     end <- tsData$date[nrow(tsData)]
     target <- tsData$date[floor(length(start:end) / 2)]
-
     
     updateDateRangeInput(session = session,
                          inputId = "dateRange",
@@ -52,6 +51,8 @@ observe({
 })
 
 observe({
+  reaVal$loggedIn
+  
   start <-startDateCache
   end <- endDateCache
   target <- start + (end - start) / 2

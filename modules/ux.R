@@ -13,7 +13,8 @@ output$login_page <- renderUI({
 output$ui_setup <- renderUI({
   reaVal$loggedIn
   
-    start <-startDateCache
+  isolate({
+    start <- startDateCache
     end <- endDateCache
     target <- start + (end - start) / 2
     article <- c("all", global.tsCache$articles$x)
@@ -94,6 +95,7 @@ output$ui_setup <- renderUI({
         )
       )
     )
+  })
 })
 
 
