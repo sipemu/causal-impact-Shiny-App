@@ -177,11 +177,9 @@ getData <- reactive({
         fnD <- TRUE
       } else {
         fnD <- checkFetchNewData(start, end, site, article, input$measVariable)
-        print(fnD)
       }
       if (fnD) {
         tsData <- getRedshiftData(start, end, site, article, input$measVariable)
-        print(nrow(tsData))
         shiny::validate(need(nrow(tsData) > 10, "Too less measurements for calculation."))
         articleCache <<- article
         siteCache <<- site

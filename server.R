@@ -26,7 +26,7 @@ function(input, output, session) {
   isNewData$loaded <- 0
   
   # source files from tools directory
-  flist <- sourceDirectory(path      = 'modules', 
+  flist <- sourceDirectory(path      = 'modules',
                            encoding  = "UTF-8",
                            recursive = TRUE)
   for (i in 1:length(flist)) {

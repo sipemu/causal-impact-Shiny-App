@@ -69,16 +69,21 @@ observe({
                   label   = "Event Date",
                   value   = target)
   
+  isolate({selArt <- input$storeID})
   updateSelectizeInput(session,
                        inputId  = "storeID",
                        label    = "Store", 
                        choices  = site, 
-                       selected = site[2])
+                       selected = selArt,
+                       server   = TRUE)
+  
+  isolate({selArt <- input$articleID})
   updateSelectizeInput(session,
                  inputId  = "articleID",
                  label    = "Article", 
                  choices  = article, 
-                 selected = article[2])
+                 selected = selArt,
+                 server   = TRUE)
 })
 
 output$downloadData <- downloadHandler(
