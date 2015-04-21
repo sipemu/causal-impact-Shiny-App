@@ -11,7 +11,7 @@ global.tsCache <- getCache()
 
 function(input, output, session) {
   reaVal <- reactiveValues()
-  reaVal$loggedIn <- FALSE
+  reaVal$loggedIn <- TRUE
   reaVal$uiReady <- FALSE
   
   # cache variables:
