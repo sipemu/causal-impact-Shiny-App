@@ -6,6 +6,8 @@ getCache <- function() {
   return(list(articles=articles, sites=sites, startDate=startDate))
 }
 
+options(shiny.reactlog=TRUE)
+
 # load cahced data
 global.tsCache <- getCache()
 
@@ -13,9 +15,11 @@ library(shiny)
 library(dygraphs)
 
 function(input, output, session) {
-  reaVal <- reactiveValues()
+  reaVal <- reactiveValues(tsData=c())
   reaVal$loggedIn <- TRUE
-  reaVal$uiReady <- FALSE
+  reaVal$uiReady <- TRUE
+  updateVal <- reactiveValues(updateDate = 0)
+  
   
   # cache variables:
   # if user just made date window smaller, data will not fetched again

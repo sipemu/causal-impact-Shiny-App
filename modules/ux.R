@@ -1,19 +1,4 @@
-output$login_page <- renderUI({
-  if (reaVal$loggedIn) {
-    uiOutput("ui_setup")
-  } else {
-    fluidRow(
-      column(2, textInput("user", "Username")),
-      column(2, passwordInput("passwd", "Password")),
-      column(2, br(), actionButton("doLogin", "Login"))
-    )
-  }
-})
-
 output$ui_setup <- renderUI({
-  reaVal$loggedIn
-  
-  isolate({
     start <- startDateCache
     end <- endDateCache
     target <- start + (end - start) / 2
@@ -21,7 +6,6 @@ output$ui_setup <- renderUI({
     site <- c("all", global.tsCache$sites$site)
     names(article) <- c("All Articles", paste0(as.numeric(global.tsCache$articles$x), "-article_name"))
     names(site) <- c("All Sites", paste0(global.tsCache$sites$site, "-site_name"))
-    
     tagList(
       fluidRow(
         shinydashboard::box(title       = "Select Dates", 
@@ -95,14 +79,11 @@ output$ui_setup <- renderUI({
         )
       )
     )
-  })
 })
 
 
 output$ui_results <- renderUI({
-  shiny::validate(need(reaVal$loggedIn, "Please log in!"))
-  
-  tsData <- getData()
+  tsData <- reaVal$tsData
   if (is.null(tsData)) 
     return()
   

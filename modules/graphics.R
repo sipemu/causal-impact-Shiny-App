@@ -1,6 +1,11 @@
 # raw data plot ----
 output$tsPlot <- renderDygraph({
-  tsData <- getData()
+  updateVal$updateDate
+  
+  isolate({
+    tsData <- reaVal$tsData
+  })
+  
   if(is.null(tsData))
     return()
   

@@ -150,14 +150,7 @@ getQuery <- function(article, site, start, end, aggFunc="SUM") {
 }
 
 # data fetch----
-getData <- reactive({
-  
-  if (is.null(input$getDataButton))
-    return()
-  
-  if (input$getDataButton == 0)
-    return()
-  
+observeEvent(input$getDataButton, {
   isolate({
     measVar <- input$measVariable
     if (is.null(measVar))
@@ -173,10 +166,10 @@ getData <- reactive({
         return()
       
       # get cached data or not 
-      if (is.null(tsDataCache)) {
+      if (is.null(reaVal$tsData)) {
         fnD <- TRUE
       } else {
-        fnD <- checkFetchNewData(start, end, site, article, input$measVariable)
+        fnD <- checkFetchNewData(reaVal$tsData, start, end, site, article, input$measVariable)
       }
       if (fnD) {
         tsData <- getRedshiftData(start, end, site, article, input$measVariable)
@@ -193,8 +186,8 @@ getData <- reactive({
     } else {
       start <- startDateCache
       end <- endDateCache
-      site <- global.tsCache$sites$site[1]
-      article <- global.tsCache$articles$x[1]
+      site <- reaVal$tsData$sites$site[1]
+      article <- reaVal$tsData$articles$x[1]
       tsData <- getRedshiftData(start, end, site, article)
       shiny::validate(need(nrow(tsData) > 10, "Too less measurements for calculation."))
       articleCache <<- article
@@ -204,19 +197,19 @@ getData <- reactive({
       measVarCache <<- measVar
       fnD <- TRUE
     }
-    # chace data globally if new
+    # cache data globally if new
     if (fnD)
-      tsDataCache <<- tsData
+      reaVal$tsData <<- tsData
     
-    return(tsData)
+    reaVal$tsData <<- tsData
   })
 })
 
 # check date window ----
-checkFetchNewData <- function(startDate, endDate, site, article, measVar) {
-  n <- nrow(tsDataCache)
-  if (startDate >= tsDataCache$date[1] & 
-      endDate <= tsDataCache$date[n] & 
+checkFetchNewData <- function(tsData, startDate, endDate, site, article, measVar) {
+  n <- nrow(tsData)
+  if (startDate >= tsData$date[1] & 
+      endDate <= tsData$date[n] & 
       sum(siteCache %in% site) == length(site) & 
       length(siteCache) == length(site) &
       sum(articleCache %in% article) == length(article) & 

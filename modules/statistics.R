@@ -1,6 +1,10 @@
 # workhorse of causal impact function
 casualImpact <- reactive({
-  tsData <- getData()
+  updateVal$updateDate
+  
+  isolate({
+    tsData <- reaVal$tsData
+  })
   
   if (is.null(tsData))
     return()
