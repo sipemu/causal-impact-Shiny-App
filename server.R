@@ -9,6 +9,9 @@ getCache <- function() {
 # load cahced data
 global.tsCache <- getCache()
 
+library(shiny)
+library(dygraphs)
+
 function(input, output, session) {
   reaVal <- reactiveValues()
   reaVal$loggedIn <- TRUE

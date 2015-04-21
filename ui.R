@@ -1,3 +1,6 @@
+library(shiny)
+library(dygraphs)
+
 shinyUI(
 dashboardPage(skin = "black",
   dashboardHeader(title = "GA Effects"),
