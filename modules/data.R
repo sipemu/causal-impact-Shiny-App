@@ -35,9 +35,9 @@ getCache <- function() {
 connectToRedshift <- function() {
   # catch warnings and errors
   tryDisconnect <- tryCatch({
-    conn <- redshift.connect("jdbc:postgresql://s-eleven-data-store.c9xyp6cclnk6.ap-southeast-2.redshift.amazonaws.com:5439/seleven?tcpKeepAlive=true", 
-                             "seuser", 
-                             "N33ds3cur1tyt0b3r43llyg00d!!")
+    conn <- redshift.connect("xxx", 
+                             "xxx", 
+                             "xxx")
   })
   shiny::validate(need(tryDisconnect, "Connection to database failed."))
   
